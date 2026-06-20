@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 
@@ -41,9 +42,24 @@ export function Footer() {
         <div className="pt-14 pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1.5fr_1fr_1fr] gap-10 lg:gap-12">
           {/* Brand */}
           <div>
-            <p className="text-white text-[15px] font-semibold tracking-tight mb-3">
-              {siteConfig.name}
-            </p>
+            {siteConfig.brand.logo ? (
+              <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity duration-200">
+                <div className="bg-white rounded px-3 py-2">
+                  <Image
+                    src={siteConfig.brand.logoDark ?? siteConfig.brand.logo}
+                    alt={siteConfig.brand.logoAlt ?? siteConfig.name}
+                    width={160}
+                    height={64}
+                    className="h-10 w-auto"
+                    unoptimized
+                  />
+                </div>
+              </Link>
+            ) : (
+              <p className="text-white text-[15px] font-semibold tracking-tight mb-3">
+                {siteConfig.name}
+              </p>
+            )}
             <p className="text-[13px] leading-relaxed max-w-xs">
               {siteConfig.footer.tagline}
             </p>

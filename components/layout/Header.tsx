@@ -43,7 +43,7 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b"
+      className="fixed top-0 left-0 right-0 z-50 border-b"
       style={{
         backgroundColor: "rgba(255,255,255,0)",
         borderBottomColor: "rgba(212,212,212,0)",

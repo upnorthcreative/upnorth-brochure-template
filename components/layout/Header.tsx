@@ -40,15 +40,27 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
   return (
-    <header
-      ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-50 border-b"
-      style={{
-        backgroundColor: "rgba(255,255,255,0)",
-        borderBottomColor: "rgba(212,212,212,0)",
-      }}
-    >
+    <>
+      {/* Backdrop — z-40 so header (z-50) sits above it, page content sits below */}
+      <div
+        className={`fixed inset-x-0 bottom-0 top-[72px] z-40 bg-neutral-950/50 md:hidden transition-opacity duration-300 ${
+          mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setMobileOpen(false)}
+        aria-hidden="true"
+      />
+
+      <header
+        ref={headerRef}
+        className="fixed top-0 left-0 right-0 z-50 border-b"
+        style={{
+          backgroundColor: "rgba(255,255,255,0)",
+          borderBottomColor: "rgba(212,212,212,0)",
+        }}
+      >
       <Container>
         <div className="flex h-[72px] items-center justify-between">
           {/* Logo */}
@@ -120,9 +132,13 @@ export function Header() {
         </div>
       </Container>
 
-      {/* Mobile nav — always white regardless of scroll */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-neutral-200 bg-white">
+      {/* Mobile nav — slides down */}
+      <div
+        className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${
+          mobileOpen ? "max-h-[400px]" : "max-h-0"
+        }`}
+      >
+        <div className="border-t border-neutral-200 bg-white">
           <Container>
             <nav className="flex flex-col py-6 gap-1">
               {siteConfig.nav.map((item) => {
@@ -150,7 +166,8 @@ export function Header() {
             </nav>
           </Container>
         </div>
-      )}
+      </div>
     </header>
+    </>
   );
 }

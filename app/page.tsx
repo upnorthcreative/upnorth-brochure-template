@@ -3,6 +3,7 @@ import { ServicesSection } from "@/components/sections/ServicesSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { FAQSection } from "@/components/sections/FAQSection";
+import { GalleryPreview } from "@/components/sections/GalleryPreview";
 import { CTASection } from "@/components/sections/CTASection";
 
 export default function HomePage() {
@@ -13,6 +14,7 @@ export default function HomePage() {
       <ProcessSection />
       <TestimonialsSection />
       <FAQSection />
+      <GalleryPreview />
       <CTASection />
     </>
   );

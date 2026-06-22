@@ -2,6 +2,18 @@
 // Shared types — kept in sync with lib/content.ts
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── Instagram / Behold ───────────────────────────────────────────────────────
+
+export interface BeholdPost {
+  id: string;
+  permalink: string;
+  mediaType: string;
+  caption?: string;
+  sizes: {
+    medium: { width: number; height: number; mediaUrl: string };
+  };
+}
+
 export interface NavItem {
   label: string;
   href: string;
@@ -84,6 +96,8 @@ export type HeroImageMode = "home" | "all" | "per-page" | "none";
 export interface ImageConfig {
   /** Hero background image (home page). Also used as fallback for "all" mode. */
   hero: string | null;
+  /** Optional alternate hero image for mobile/tablet (< lg). Falls back to hero if not set. */
+  heroMobile?: string | null;
   /** About page featured image */
   about: string | null;
   /** Per-page banner images — only used when heroImageMode is "per-page" */

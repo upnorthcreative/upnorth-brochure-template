@@ -37,7 +37,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-neutral-950 text-neutral-500">
+    <footer className="bg-brand text-neutral-300">
       <Container>
         <div className="pt-14 pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1.5fr_1fr_1fr] gap-10 lg:gap-12">
           {/* Brand */}

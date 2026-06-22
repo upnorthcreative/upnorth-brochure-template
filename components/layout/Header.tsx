@@ -11,7 +11,14 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const headerRef = useRef<HTMLElement>(null);
+
+  // Reset mobile menu on navigation (render-phase derived state)
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setMobileOpen(false);
+  }
 
   useEffect(() => {
     const header = headerRef.current;
@@ -39,8 +46,6 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   return (
     <>

@@ -18,15 +18,15 @@ interface ButtonProps {
 
 const variantStyles: Record<Variant, string> = {
   primary:
-    "bg-neutral-950 text-white hover:bg-neutral-800 border border-neutral-950",
+    "bg-brand text-white hover:bg-brand-hover border border-brand",
   secondary:
-    "bg-white text-neutral-950 hover:bg-neutral-100 border border-white",
+    "bg-white text-brand hover:bg-neutral-100 border border-white",
   outline:
-    "bg-transparent text-neutral-950 hover:bg-neutral-950 hover:text-white border border-neutral-950",
+    "bg-transparent text-brand hover:bg-brand hover:text-white border border-brand",
   "outline-dark":
-    "bg-transparent text-neutral-400 hover:text-white hover:border-neutral-400 border border-neutral-700",
+    "bg-transparent text-white/75 hover:text-white hover:border-white border border-white/40",
   ghost:
-    "bg-transparent text-neutral-950 hover:underline border border-transparent",
+    "bg-transparent text-brand hover:underline border border-transparent",
 };
 
 const sizeStyles: Record<Size, string> = {
@@ -47,7 +47,7 @@ export function Button({
   external,
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center font-medium tracking-normal transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-950 disabled:opacity-40 disabled:pointer-events-none",
+    "inline-flex items-center justify-center font-medium tracking-normal transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand disabled:opacity-40 disabled:pointer-events-none",
     variantStyles[variant],
     sizeStyles[size],
     className

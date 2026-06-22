@@ -43,7 +43,9 @@ export function ContactSection() {
                     </div>
                   ))}
                 </div>
-                <p className="mt-3 text-[12px] text-neutral-400">{siteConfig.emergency}</p>
+                {siteConfig.emergency && (
+                  <p className="mt-3 text-[12px] text-neutral-400">{siteConfig.emergency}</p>
+                )}
               </div>
             </div>
 

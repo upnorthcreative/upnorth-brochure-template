@@ -14,7 +14,7 @@ export function Section({ children, className, id, dark, noPaddingTop }: Section
       id={id}
       className={cn(
         noPaddingTop ? "pb-16 sm:pb-20 lg:pb-28" : "py-16 sm:py-20 lg:py-28",
-        dark ? "bg-neutral-950 text-white" : "bg-white",
+        dark ? "bg-brand text-white" : "bg-white",
         className
       )}
     >

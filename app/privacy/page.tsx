@@ -63,10 +63,8 @@ export default function PrivacyPage() {
             <div>
               <h2 className="text-base font-semibold text-neutral-950 mb-3">Contact</h2>
               <p>
-                For privacy-related questions, contact us at{" "}
-                <a href={`mailto:${siteConfig.email}`} className="underline">
-                  {siteConfig.email}
-                </a>.
+                For privacy-related questions, please use our{" "}
+                <a href="/contact" className="underline">contact form</a>.
               </p>
             </div>
           </div>

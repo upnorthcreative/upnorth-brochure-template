@@ -74,11 +74,6 @@ export function Footer() {
                   {siteConfig.phone}
                 </a>
               </p>
-              <p>
-                <a href={`mailto:${siteConfig.email}`} className={`inline-block ${hoverUnderline}`}>
-                  {siteConfig.email}
-                </a>
-              </p>
             </div>
             <div className="flex gap-3">
               {siteConfig.social.facebook && (

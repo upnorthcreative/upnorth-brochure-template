@@ -4,9 +4,12 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
+import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
 type Status = "idle" | "loading" | "error" | "fading" | "success";
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
+
+const TURNSTILE_ENABLED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 const inputBase =
   "w-full border bg-neutral-50 px-4 py-3.5 text-[14px] text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:bg-white transition-colors duration-150";
@@ -30,18 +33,30 @@ function validate(name: string, email: string, message: string): FieldErrors {
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(
+    TURNSTILE_ENABLED ? null : "no-key"
+  );
+  const [widgetKey, setWidgetKey] = useState(0);
+
   const pathname = usePathname();
   const { contactForm } = siteConfig;
+
+  function resetWidget() {
+    setTurnstileToken(null);
+    setWidgetKey((k) => k + 1);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const name = (formData.get("name") as string) ?? "";
-    const email = (formData.get("email") as string) ?? "";
-    const phone = (formData.get("phone") as string) ?? "";
-    const message = (formData.get("message") as string) ?? "";
+    const name     = (formData.get("name")    as string) ?? "";
+    const email    = (formData.get("email")   as string) ?? "";
+    const phone    = (formData.get("phone")   as string) ?? "";
+    const message  = (formData.get("message") as string) ?? "";
+    const honeypot = (formData.get("website") as string) ?? "";
 
     const errors = validate(name, email, message);
     if (Object.keys(errors).length > 0) {
@@ -49,7 +64,10 @@ export function ContactForm() {
       return;
     }
 
+    if (!turnstileToken) return;
+
     setFieldErrors({});
+    setApiError(null);
     setStatus("loading");
 
     try {
@@ -62,6 +80,8 @@ export function ContactForm() {
           phone: phone || undefined,
           message,
           sourcePage: `${siteConfig.seo.siteUrl}${pathname}`,
+          turnstileToken,
+          honeypot: honeypot || undefined,
         }),
       });
 
@@ -70,12 +90,18 @@ export function ContactForm() {
         setTimeout(() => {
           setStatus("success");
           form.reset();
+          resetWidget();
         }, 350);
       } else {
+        const data = (await res.json()) as { error?: string };
+        setApiError(data.error ?? contactForm.errorMessage);
         setStatus("error");
+        resetWidget();
       }
     } catch {
+      setApiError(contactForm.errorMessage);
       setStatus("error");
+      resetWidget();
     }
   }
 
@@ -99,6 +125,15 @@ export function ContactForm() {
       onSubmit={handleSubmit}
       className={`space-y-5 transition-opacity duration-[350ms] ${status === "fading" ? "opacity-0" : "opacity-100"}`}
     >
+      {/* Honeypot — hidden from real users, bots fill this in */}
+      <div
+        aria-hidden="true"
+        style={{ position: "absolute", opacity: 0, pointerEvents: "none", height: 0, overflow: "hidden" }}
+      >
+        <label htmlFor="website">Website</label>
+        <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label htmlFor="name" className="block text-[11px] text-neutral-500 uppercase tracking-[0.12em] mb-2">
@@ -170,8 +205,19 @@ export function ContactForm() {
         )}
       </div>
 
+      {TURNSTILE_ENABLED && (
+        <TurnstileWidget
+          key={widgetKey}
+          onSuccess={setTurnstileToken}
+          onError={resetWidget}
+          onExpire={resetWidget}
+        />
+      )}
+
       {status === "error" && (
-        <p className="text-[13px] text-red-500">{contactForm.errorMessage}</p>
+        <p className="text-[13px] text-red-500" role="alert">
+          {apiError ?? contactForm.errorMessage}
+        </p>
       )}
 
       <div className="pt-2">
@@ -179,7 +225,7 @@ export function ContactForm() {
           type="submit"
           size="lg"
           className="w-full"
-          disabled={status === "loading" || status === "fading"}
+          disabled={status === "loading" || status === "fading" || !turnstileToken}
         >
           {status === "loading" ? contactForm.loadingLabel : contactForm.submitLabel}
         </Button>

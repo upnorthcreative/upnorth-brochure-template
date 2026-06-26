@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { siteConfig } from "@/lib/content";
+import {
+  isHoneypotFilled,
+  checkRateLimit,
+  verifyTurnstile,
+  getClientIp,
+} from "@/lib/spam-protection";
 
 function escapeHtml(str: string): string {
   return str
@@ -17,6 +23,8 @@ interface ContactPayload {
   phone?: unknown;
   message?: unknown;
   sourcePage?: unknown;
+  turnstileToken?: unknown;
+  honeypot?: unknown;
 }
 
 function isNonEmptyString(v: unknown): v is string {
@@ -26,9 +34,33 @@ function isNonEmptyString(v: unknown): v is string {
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as ContactPayload;
-    const { name, email, phone, message, sourcePage } = body;
+    const { name, email, phone, message, sourcePage, turnstileToken, honeypot } = body;
 
-    // ── Validation ───────────────────────────────────────────────────────────
+    // ── 1. Honeypot — bots fill hidden fields, humans don't ─────────────────
+    if (isHoneypotFilled(honeypot)) {
+      return NextResponse.json({ success: true });
+    }
+
+    // ── 2. Rate limiting — cap to 5 submissions per IP per minute ───────────
+    const ip = getClientIp(request.headers);
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a moment and try again." },
+        { status: 429 }
+      );
+    }
+
+    // ── 3. Cloudflare Turnstile — verify the challenge token ────────────────
+    const token = typeof turnstileToken === "string" ? turnstileToken : "";
+    const turnstileOk = await verifyTurnstile(token, ip);
+    if (!turnstileOk) {
+      return NextResponse.json(
+        { error: "Verification failed. Please complete the security check and try again." },
+        { status: 400 }
+      );
+    }
+
+    // ── 4. Field validation ──────────────────────────────────────────────────
     if (!isNonEmptyString(name) || !isNonEmptyString(email) || !isNonEmptyString(message)) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }

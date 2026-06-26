@@ -30,22 +30,7 @@ export default async function GalleryPage() {
       <section className="bg-white py-20 lg:py-28">
         <Container>
           {posts.length > 0 ? (
-            <>
-              {social.instagram && (
-                <div className="flex justify-end mb-10">
-                  <a
-                    href={social.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.18em] text-neutral-400 hover:text-neutral-900 transition-colors duration-300"
-                  >
-                    {social.instagramHandle ?? "Follow on Instagram"}
-                    <span className="block w-8 h-px bg-current" />
-                  </a>
-                </div>
-              )}
-              <InstagramGrid posts={posts} />
-            </>
+            <InstagramGrid posts={posts} />
           ) : (
             <div className="text-center py-20">
               <p className="text-xl font-light text-neutral-500 mb-6">

@@ -24,12 +24,6 @@ export function ContactSection() {
                 </a>
               </div>
               <div>
-                <p className="text-[10px] text-neutral-400 uppercase tracking-[0.15em] mb-2">Email</p>
-                <a href={`mailto:${siteConfig.email}`} className="text-[17px] font-medium hover:opacity-60 transition-opacity">
-                  {siteConfig.email}
-                </a>
-              </div>
-              <div>
                 <p className="text-[10px] text-neutral-400 uppercase tracking-[0.15em] mb-2">Address</p>
                 <p className="text-[17px] font-medium">{siteConfig.address.full}</p>
               </div>

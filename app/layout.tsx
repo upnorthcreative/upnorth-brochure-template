@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -55,7 +56,6 @@ const localBusinessSchema = {
   description: siteConfig.seo.defaultDescription,
   url: siteConfig.seo.siteUrl,
   telephone: siteConfig.phoneHref.replace("tel:", ""),
-  email: siteConfig.email,
   address: {
     "@type": "PostalAddress",
     streetAddress: siteConfig.address.street,
@@ -69,6 +69,8 @@ const localBusinessSchema = {
 };
 
 const gaId = siteConfig.analytics.googleAnalyticsId;
+const clarityId = siteConfig.analytics.microsoftClarityId;
+const isProd = process.env.NODE_ENV === "production";
 
 export default function RootLayout({
   children,
@@ -82,15 +84,21 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
-        {gaId && (
+        {gaId && isProd && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`,
-              }}
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
             />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}
+            </Script>
           </>
+        )}
+        {clarityId && isProd && (
+          <Script id="microsoft-clarity" strategy="afterInteractive">
+            {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${clarityId}");`}
+          </Script>
         )}
         <Header />
         <main className="flex-1">{children}</main>

@@ -55,16 +55,18 @@ const localBusinessSchema = {
   name: siteConfig.name,
   description: siteConfig.seo.defaultDescription,
   url: siteConfig.seo.siteUrl,
-  telephone: siteConfig.phoneHref.replace("tel:", ""),
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: siteConfig.address.street,
-    addressLocality: siteConfig.address.city,
-    addressRegion: siteConfig.address.province,
-    postalCode: siteConfig.address.postal,
-    addressCountry: "CA",
-  },
-  openingHours: siteConfig.seo.openingHours,
+  ...(siteConfig.phone ? { telephone: siteConfig.phoneHref.replace("tel:", "") } : {}),
+  ...(siteConfig.address.street ? {
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: siteConfig.address.street,
+      addressLocality: siteConfig.address.city,
+      addressRegion: siteConfig.address.province,
+      postalCode: siteConfig.address.postal,
+      addressCountry: "CA",
+    },
+  } : {}),
+  ...(siteConfig.seo.openingHours.length ? { openingHours: siteConfig.seo.openingHours } : {}),
   image: `${siteConfig.seo.siteUrl}${siteConfig.seo.ogImage}`,
 };
 

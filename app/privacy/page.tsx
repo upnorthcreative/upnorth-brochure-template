@@ -7,6 +7,12 @@ import { Container } from "@/components/ui/Container";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: `Privacy Policy for ${siteConfig.name}.`,
+  alternates: {
+    canonical: `${siteConfig.seo.siteUrl}/privacy`,
+  },
+  openGraph: {
+    url: `${siteConfig.seo.siteUrl}/privacy`,
+  },
 };
 
 export default function PrivacyPage() {

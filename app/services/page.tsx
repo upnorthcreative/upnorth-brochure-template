@@ -9,6 +9,12 @@ import { CTASection } from "@/components/sections/CTASection";
 export const metadata: Metadata = {
   title: "Services",
   description: `Explore the plumbing services offered by ${siteConfig.name}. Emergency repairs, drain cleaning, water heaters, renovations, and more.`,
+  alternates: {
+    canonical: `${siteConfig.seo.siteUrl}/services`,
+  },
+  openGraph: {
+    url: `${siteConfig.seo.siteUrl}/services`,
+  },
 };
 
 export default function ServicesPage() {

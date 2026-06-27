@@ -9,6 +9,12 @@ import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 export const metadata: Metadata = {
   title: "About Us",
   description: `Learn about ${siteConfig.name} — ${siteConfig.shortDescription}`,
+  alternates: {
+    canonical: `${siteConfig.seo.siteUrl}/about`,
+  },
+  openGraph: {
+    url: `${siteConfig.seo.siteUrl}/about`,
+  },
 };
 
 export default function AboutPage() {

@@ -8,6 +8,12 @@ import { fetchInstagramFeed } from "@/lib/instagram";
 export const metadata: Metadata = {
   title: "Gallery",
   description: `Browse our work at ${siteConfig.name}.`,
+  alternates: {
+    canonical: `${siteConfig.seo.siteUrl}/gallery`,
+  },
+  openGraph: {
+    url: `${siteConfig.seo.siteUrl}/gallery`,
+  },
 };
 
 export const revalidate = 3600;

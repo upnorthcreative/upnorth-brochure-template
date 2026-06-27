@@ -6,6 +6,12 @@ import { ContactSection } from "@/components/sections/ContactSection";
 export const metadata: Metadata = {
   title: "Contact",
   description: `Contact ${siteConfig.name}. Call ${siteConfig.phone} or send us a message for a free estimate.`,
+  alternates: {
+    canonical: `${siteConfig.seo.siteUrl}/contact`,
+  },
+  openGraph: {
+    url: `${siteConfig.seo.siteUrl}/contact`,
+  },
 };
 
 export default function ContactPage() {

@@ -331,3 +331,7 @@ types/
   index.ts              # Shared TypeScript interfaces
 public/                 # Static assets — favicon, logo, og-image.png, hero images
 ```
+
+## Branch Workflow
+
+This project uses a two-branch workflow (`main` for production, `dev` for active development). See [BRANCH_WORKFLOW.md](./BRANCH_WORKFLOW.md).

@@ -40,3 +40,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Demo / scrape source images used only while building the template.
+# Scratch assets that should never be committed to the template repo.
+# NOTE: Do NOT ignore image folders the site actually renders
+# (/public/images, /public/images/team, /public/images/portfolio) — a
+# client project must commit those so they deploy on Vercel.
+/public/images/scraped/

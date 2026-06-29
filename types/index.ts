@@ -33,11 +33,34 @@ export interface ProcessStep {
   description: string;
 }
 
-export interface Testimonial {
-  name: string;
-  location: string;
-  quote: string;
-  rating: number;
+/**
+ * Source for live Google reviews.
+ * - "places" — Google Places API (available now)
+ * - "gbp"    — Google Business Profile API (use once API access is approved)
+ */
+export type ReviewProvider = "places" | "gbp";
+
+export interface ReviewsConfig {
+  /**
+   * Master switch for the live Google reviews integration.
+   * When false — or when the API is misconfigured/unavailable — the Reviews
+   * section hides itself. There is no hardcoded fallback content.
+   */
+  enabled: boolean;
+  /** Which Google API supplies reviews. Switch to "gbp" once approved — no component changes needed. */
+  provider: ReviewProvider;
+  /** Eyebrow label above the heading */
+  eyebrow: string;
+  /** Section heading */
+  heading: string;
+  /** Maximum number of live reviews to render */
+  maxReviews: number;
+  /**
+   * "Write a review" link target. When null, falls back to Google's review
+   * composer (built from the Place ID), then `maps.profileUrl`. Set to an
+   * empty string to hide the link entirely.
+   */
+  reviewUrl: string | null;
 }
 
 export interface FAQ {

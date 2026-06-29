@@ -47,7 +47,7 @@ export function Button({
   external,
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center font-medium tracking-normal transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand disabled:opacity-40 disabled:pointer-events-none",
+    "inline-flex items-center justify-center font-medium tracking-normal transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand disabled:opacity-40 disabled:pointer-events-none",
     variantStyles[variant],
     sizeStyles[size],
     className

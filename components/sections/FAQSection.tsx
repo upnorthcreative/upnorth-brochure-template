@@ -29,7 +29,7 @@ export function FAQSection() {
               <div key={faq.question}>
                 <button
                   id={btnId}
-                  className={`w-full flex items-center justify-between text-left gap-8 group ${i === 0 ? "pb-5" : "py-5"}`}
+                  className={`w-full flex items-center justify-between text-left gap-8 group cursor-pointer ${i === 0 ? "pb-5" : "py-5"}`}
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
                   aria-controls={panelId}

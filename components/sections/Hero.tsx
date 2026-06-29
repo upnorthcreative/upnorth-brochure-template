@@ -1,11 +1,25 @@
 import Image from "next/image";
 import { siteConfig } from "@/lib/content";
+import { fetchReviews, reviewStats } from "@/lib/reviews";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
-export function Hero() {
+// Desktop column count by number of stats — literal classes so Tailwind keeps them.
+const STAT_GRID_COLS: Record<number, string> = {
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-3",
+  4: "sm:grid-cols-4",
+  5: "sm:grid-cols-5",
+};
+
+export async function Hero() {
   const { hero, heroImageMode, images } = siteConfig;
   const showImage = heroImageMode !== "none" && images.hero;
+
+  // Live Google rating + review count when available; otherwise just the
+  // static stats below — same graceful-hide policy as the Reviews section.
+  const stats = [...reviewStats(await fetchReviews()), ...hero.stats];
 
   return (
     <section className="relative bg-neutral-950 text-white overflow-hidden">
@@ -48,8 +62,13 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="border-t border-neutral-800 grid grid-cols-2 sm:grid-cols-4 gap-px bg-neutral-800">
-            {hero.stats.map((stat) => (
+          <div
+            className={cn(
+              "border-t border-neutral-800 grid grid-cols-2 gap-px bg-neutral-800",
+              STAT_GRID_COLS[stats.length] ?? "sm:grid-cols-4"
+            )}
+          >
+            {stats.map((stat) => (
               <div key={stat.label} className={`py-6 sm:py-8 px-6 sm:px-8 ${showImage ? "bg-neutral-950/80" : "bg-neutral-950"}`}>
                 <p className="text-white text-2xl sm:text-3xl font-semibold tracking-tight mb-1">
                   {stat.value}

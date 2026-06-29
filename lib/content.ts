@@ -6,7 +6,7 @@ import type {
   NavItem,
   Service,
   ProcessStep,
-  Testimonial,
+  ReviewsConfig,
   FAQ,
   BusinessHours,
   Stat,
@@ -123,11 +123,12 @@ export const siteConfig = {
       "Serving Maplewood and surrounding communities for over 15 years. From small repairs to full renovations — we get it done right.",
     cta: { label: "Get a Free Quote", href: "/contact" },
     secondaryCta: { label: "View Services", href: "/services" },
+    // Static, always-true stats. The live Google rating + review count are
+    // prepended automatically when the API returns data (see components/sections/Hero.tsx).
     stats: [
       { value: "15+", label: "Years in Business" },
       { value: "1,800+", label: "Jobs Completed" },
       { value: "24/7", label: "Emergency Service" },
-      { value: "4.9 ★", label: "Google Rating" },
     ] satisfies Stat[],
   },
 
@@ -205,30 +206,19 @@ export const siteConfig = {
     },
   ] satisfies ProcessStep[],
 
-  // ── Testimonials ───────────────────────────────────────────
-  testimonials: [
-    {
-      name: "Sarah M.",
-      location: "Maplewood, ON",
-      quote:
-        "Called on a Friday afternoon with a burst pipe. They were here within the hour and had everything sorted before dinner. Absolute lifesavers.",
-      rating: 5,
-    },
-    {
-      name: "Dave & Linda T.",
-      location: "Cedarville, ON",
-      quote:
-        "Professional, clean, and honestly priced. They finished our basement renovation ahead of schedule and kept us informed every step of the way.",
-      rating: 5,
-    },
-    {
-      name: "James R.",
-      location: "Pinecrest, ON",
-      quote:
-        "Hired them for a deck build and couldn't be happier. Showed up when they said they would, did beautiful work, and left the site spotless.",
-      rating: 5,
-    },
-  ] satisfies Testimonial[],
+  // ── Reviews (Google integration) ───────────────────────────
+  // Live Google reviews, fetched server-side and cached. There is NO hardcoded
+  // fallback content — when the integration is disabled or the API is
+  // unavailable, the Reviews section hides itself entirely. API credentials
+  // live in env vars (GOOGLE_PLACES_API_KEY, GOOGLE_PLACE_ID) — never here.
+  reviews: {
+    enabled: true,
+    provider: "places",
+    eyebrow: "Client Reviews",
+    heading: "What Our Clients Say",
+    maxReviews: 6,
+    reviewUrl: null, // "Write a review" → Google composer (from Place ID), then maps.profileUrl
+  } satisfies ReviewsConfig,
 
   // ── FAQs ───────────────────────────────────────────────────
   faqs: [
@@ -267,11 +257,11 @@ export const siteConfig = {
       "We treat every home like our own. That means arriving on time, explaining what we're doing, and leaving the job site cleaner than we found it.",
       "When you call us, you'll always reach a real person. We're your neighbours, and we take that seriously.",
     ],
+    // Static, always-true stats. The live Google rating + review count are
+    // prepended automatically when the API returns data (see app/about/page.tsx).
     stats: [
       { value: "15+", label: "Years in Business" },
-      { value: "1,800+", label: "Jobs Completed" },
       { value: "100%", label: "Licensed & Insured" },
-      { value: "4.9★", label: "Google Rating" },
     ] satisfies Stat[],
   },
 

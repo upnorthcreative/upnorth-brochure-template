@@ -115,7 +115,7 @@ export function Header() {
 
           {/* Mobile menu toggle */}
           <button
-            className={`md:hidden -mr-1 p-2.5 transition-colors duration-300 ${
+            className={`md:hidden -mr-1 p-2.5 cursor-pointer transition-colors duration-300 ${
               scrolled
                 ? "text-neutral-500 hover:text-neutral-950"
                 : "text-white/80 hover:text-white"

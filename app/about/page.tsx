@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/content";
+import { fetchReviews, reviewStats } from "@/lib/reviews";
 import { PageBanner } from "@/components/sections/PageBanner";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { CTASection } from "@/components/sections/CTASection";
-import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
+import { Reviews } from "@/components/sections/Reviews";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -17,8 +18,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
   const { about } = siteConfig;
+
+  // Live Google rating + review count prepended when available; otherwise just
+  // the static stats below — same graceful-hide policy as the Reviews section.
+  const stats = [...reviewStats(await fetchReviews(), "Google Reviews"), ...about.stats];
 
   return (
     <>
@@ -41,7 +46,7 @@ export default function AboutPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-px bg-neutral-200 border border-neutral-200">
-              {about.stats.map((stat) => (
+              {stats.map((stat) => (
                 <div key={stat.label} className="bg-white p-8 lg:p-10">
                   <p className="text-4xl font-semibold tracking-tighter mb-2">{stat.value}</p>
                   <p className="text-[13px] text-neutral-500">{stat.label}</p>
@@ -52,7 +57,7 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      <TestimonialsSection bg="white" noPaddingTop />
+      <Reviews bg="white" noPaddingTop />
       <CTASection />
     </>
   );

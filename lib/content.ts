@@ -284,6 +284,11 @@ export const siteConfig = {
   contactForm: {
     // ── Email delivery ────────────────────────────────────────
     toEmail: "hello@maplewoodhomeservices.ca",
+    // fromEmail MUST be on a domain verified in Resend, or sends fail silently.
+    // Resend's free plan allows ONE verified domain — the common agency pattern
+    // is to verify one domain and send all client forms from it (replyTo still
+    // routes replies to the visitor). To send from this client's own domain,
+    // verify it in Resend (paid plan) first.
     fromEmail: "website@maplewoodhomeservices.ca",
     fromName: "Maplewood Home Services",
     // Set replyTo to route replies to a specific inbox (e.g. "owner@domain.com").

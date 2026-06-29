@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
 
-    await resend.emails.send({
+    const { error: sendError } = await resend.emails.send({
       from: `${contactForm.fromName} <${contactForm.fromEmail}>`,
       to: contactForm.toEmail,
       replyTo: contactForm.replyTo ?? email,
@@ -136,6 +136,16 @@ export async function POST(request: NextRequest) {
 </html>
       `.trim(),
     });
+
+    // Resend returns errors in the response (it does not throw), so a silent
+    // failure here — e.g. an unverified sending domain — must be surfaced.
+    if (sendError) {
+      console.error("Resend send error:", sendError);
+      return NextResponse.json(
+        { error: contactForm.errorMessage },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

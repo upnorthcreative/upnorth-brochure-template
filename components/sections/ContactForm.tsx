@@ -42,9 +42,19 @@ export function ContactForm() {
   const pathname = usePathname();
   const { contactForm } = siteConfig;
 
+  // Full remount — used after a submit attempt, since a Turnstile token is
+  // single-use and we need a fresh challenge for the next submission.
   function resetWidget() {
     setTurnstileToken(null);
     setWidgetKey((k) => k + 1);
+  }
+
+  // Just invalidate the token (disables submit) without remounting. Used for
+  // Turnstile's own error/expire callbacks — Cloudflare retries and refreshes
+  // internally, so remounting here would create an infinite re-render loop
+  // whenever the hostname is rejected (e.g. a Preview URL not yet allowlisted).
+  function clearToken() {
+    setTurnstileToken(null);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -209,8 +219,8 @@ export function ContactForm() {
         <TurnstileWidget
           key={widgetKey}
           onSuccess={setTurnstileToken}
-          onError={resetWidget}
-          onExpire={resetWidget}
+          onError={clearToken}
+          onExpire={clearToken}
         />
       )}
 

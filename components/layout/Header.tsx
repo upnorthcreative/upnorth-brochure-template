@@ -47,6 +47,16 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close the mobile menu on Escape while it is open.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
+
   return (
     <>
       {/* Backdrop — z-40 so header (z-50) sits above it, page content sits below */}
@@ -138,7 +148,9 @@ export function Header() {
       </Container>
 
       {/* Mobile nav — slides down */}
+      {/* inert removes the collapsed links from the tab order when closed. */}
       <div
+        inert={!mobileOpen}
         className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${
           mobileOpen ? "max-h-[400px]" : "max-h-0"
         }`}

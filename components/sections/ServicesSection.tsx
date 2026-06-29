@@ -10,7 +10,7 @@ export function ServicesSection({ hideHeading }: ServicesSectionProps) {
   return (
     <Section>
       <Container>
-        {!hideHeading && (
+        {!hideHeading ? (
           <div className="mb-12 sm:mb-16">
             <p className="text-neutral-400 text-[11px] uppercase tracking-[0.25em] mb-4">
               What We Do
@@ -19,6 +19,9 @@ export function ServicesSection({ hideHeading }: ServicesSectionProps) {
               Our Services
             </h2>
           </div>
+        ) : (
+          // Keeps the heading outline intact so the service <h3>s don't skip a level.
+          <h2 className="sr-only">Our Services</h2>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-neutral-200 border border-neutral-200">

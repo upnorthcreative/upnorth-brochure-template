@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { siteConfig } from "@/lib/content";
 import { PageBanner } from "@/components/sections/PageBanner";
 import { Section } from "@/components/ui/Section";
@@ -70,7 +71,7 @@ export default function PrivacyPage() {
               <h2 className="text-base font-semibold text-neutral-950 mb-3">Contact</h2>
               <p>
                 For privacy-related questions, please use our{" "}
-                <a href="/contact" className="underline">contact form</a>.
+                <Link href="/contact" className="underline">contact form</Link>.
               </p>
             </div>
           </div>

@@ -29,7 +29,8 @@ function Avatar({
   name: string;
   className?: string;
 }) {
-  if (src) {
+  const [failed, setFailed] = useState(false);
+  if (src && !failed) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
@@ -37,6 +38,7 @@ function Avatar({
         alt=""
         loading="lazy"
         referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
         className={cn("rounded-full object-cover shrink-0", className)}
       />
     );

@@ -47,11 +47,11 @@ export async function Reviews({ bg = "soft", noPaddingTop }: ReviewsProps) {
     }));
 
   // Nothing to show — hide the section entirely.
-  if (cards.length === 0) return null;
+  if (!data || cards.length === 0) return null;
 
   // Aggregate badge, straight from the live API response.
-  const summary = `${data!.averageRating.toFixed(1)} · ${data!.totalCount.toLocaleString()} Google reviews`;
-  const summaryStars = Math.round(data!.averageRating);
+  const summary = `${data.averageRating.toFixed(1)} · ${data.totalCount.toLocaleString()} Google reviews`;
+  const summaryStars = Math.round(data.averageRating);
 
   // "Write a review" link: config override → Google composer (from Place ID) → maps profile.
   const link =

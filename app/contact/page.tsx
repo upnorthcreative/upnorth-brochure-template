@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/lib/content";
+import { siteConfig, pageOpenGraph } from "@/lib/content";
 import { PageBanner } from "@/components/sections/PageBanner";
 import { ContactSection } from "@/components/sections/ContactSection";
 
@@ -9,9 +9,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteConfig.seo.siteUrl}/contact`,
   },
-  openGraph: {
-    url: `${siteConfig.seo.siteUrl}/contact`,
-  },
+  openGraph: pageOpenGraph("/contact"),
 };
 
 export default function ContactPage() {

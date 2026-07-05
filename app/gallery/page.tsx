@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/lib/content";
+import { siteConfig, pageOpenGraph } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { PageBanner } from "@/components/sections/PageBanner";
 import { InstagramGrid } from "@/components/sections/InstagramGrid";
@@ -11,9 +11,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteConfig.seo.siteUrl}/gallery`,
   },
-  openGraph: {
-    url: `${siteConfig.seo.siteUrl}/gallery`,
-  },
+  openGraph: pageOpenGraph("/gallery"),
 };
 
 export const revalidate = 3600;

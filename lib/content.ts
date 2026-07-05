@@ -386,3 +386,26 @@ export const siteConfig = {
 };
 
 export type SiteConfig = typeof siteConfig;
+
+/**
+ * Per-page Open Graph block.
+ *
+ * Next.js replaces a parent's `openGraph` wholesale when a page sets its own —
+ * the parent's `images` are NOT inherited. So every page that overrides
+ * `openGraph` (even just to set `url`) must re-supply the image, or its social
+ * cards render with no preview image. Use this helper so that can't be forgotten.
+ */
+export function pageOpenGraph(path: string) {
+  const url = `${siteConfig.seo.siteUrl}${path}`;
+  return {
+    url,
+    images: [
+      {
+        url: siteConfig.seo.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
+      },
+    ],
+  };
+}

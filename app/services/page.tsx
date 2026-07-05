@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/lib/content";
+import { siteConfig, pageOpenGraph } from "@/lib/content";
 import { PageBanner } from "@/components/sections/PageBanner";
 import { ServicesSection } from "@/components/sections/ServicesSection";
 import { ServiceAreasSection } from "@/components/sections/ServiceAreasSection";
@@ -12,9 +12,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteConfig.seo.siteUrl}/services`,
   },
-  openGraph: {
-    url: `${siteConfig.seo.siteUrl}/services`,
-  },
+  openGraph: pageOpenGraph("/services"),
 };
 
 export default function ServicesPage() {

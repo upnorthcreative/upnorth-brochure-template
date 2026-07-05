@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/lib/content";
+import { siteConfig, pageOpenGraph } from "@/lib/content";
 import { fetchReviews, reviewStats } from "@/lib/reviews";
 import { PageBanner } from "@/components/sections/PageBanner";
 import { Section } from "@/components/ui/Section";
@@ -13,9 +13,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteConfig.seo.siteUrl}/about`,
   },
-  openGraph: {
-    url: `${siteConfig.seo.siteUrl}/about`,
-  },
+  openGraph: pageOpenGraph("/about"),
 };
 
 export default async function AboutPage() {

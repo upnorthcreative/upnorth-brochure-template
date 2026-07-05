@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { siteConfig } from "@/lib/content";
+import { siteConfig, pageOpenGraph } from "@/lib/content";
 import { PageBanner } from "@/components/sections/PageBanner";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
@@ -11,9 +11,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteConfig.seo.siteUrl}/privacy`,
   },
-  openGraph: {
-    url: `${siteConfig.seo.siteUrl}/privacy`,
-  },
+  openGraph: pageOpenGraph("/privacy"),
 };
 
 export default function PrivacyPage() {

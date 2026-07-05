@@ -123,6 +123,32 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Services + Areas We Serve — full-width SEO strips */}
+        {siteConfig.footer.serviceLinks && siteConfig.footer.serviceLinks.length > 0 && (
+          <div className="border-t border-neutral-900 py-7">
+            <p className="text-neutral-500 text-[11px] uppercase tracking-[0.2em] mb-4">Services</p>
+            <nav className="flex flex-wrap gap-x-7 gap-y-3" aria-label="Services">
+              {siteConfig.footer.serviceLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="text-[13px] text-neutral-400 hover:text-white transition-colors duration-200">
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+        {siteConfig.footer.areaLinks && siteConfig.footer.areaLinks.length > 0 && (
+          <div className="border-t border-neutral-900 py-7">
+            <p className="text-neutral-500 text-[11px] uppercase tracking-[0.2em] mb-4">Areas We Serve</p>
+            <nav className="flex flex-wrap gap-x-7 gap-y-3" aria-label="Areas we serve">
+              {siteConfig.footer.areaLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="text-[13px] text-neutral-400 hover:text-white transition-colors duration-200">
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+
         {/* Bottom bar */}
         <div className="border-t border-neutral-900 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[12px]">&copy; {year} {siteConfig.name}. All rights reserved.</p>

@@ -29,6 +29,12 @@ export const siteConfig = {
     "Maplewood Home Services delivers reliable residential and commercial contracting across the Maplewood area. Fully licensed, insured, and ready to tackle any project.",
   shortDescription: "Trusted local contractors serving Maplewood and surrounding communities since 2010.",
 
+  // ── SEO service word ───────────────────────────────────────
+  // Drives the location + service landing pages (e.g. "Home Services in
+  // <City>"). Set to whatever the client sells: "Home Services", "Plumbing",
+  // "Roofing", "Landscaping", "HVAC", etc.
+  serviceNoun: "Home Services",
+
   // ── Locale ─────────────────────────────────────────────────
   // BCP-47 language tag used on <html lang=""> and OG locale
   locale: "en-CA",
@@ -328,6 +334,18 @@ export const siteConfig = {
       { label: "Services", href: "/services" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy" },
+    ] satisfies NavItem[],
+    // SEO service landing pages — rendered as a full-width footer strip.
+    // Keep in sync with lib/services.ts (leave empty [] to hide the strip).
+    serviceLinks: [
+      { label: "Emergency Plumbing", href: "/emergency-plumbing" },
+      { label: "Furnace Repair in Maplewood", href: "/furnace-repair-maplewood" },
+    ] satisfies NavItem[],
+    // SEO location landing pages — rendered as a full-width footer strip.
+    // Keep in sync with lib/locations.ts (leave empty [] to hide the strip).
+    areaLinks: [
+      { label: "Home Services in Maplewood", href: "/home-services-maplewood" },
+      { label: "Home Services in Cedarville", href: "/home-services-cedarville" },
     ] satisfies NavItem[],
   },
 

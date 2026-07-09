@@ -36,8 +36,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.seo.defaultTitle,
-    description: siteConfig.seo.defaultDescription,
+    // title/description intentionally omitted so Next derives them per-page
+    // from each page's own title/description (pages override openGraph but not
+    // twitter, so static values here would leak the homepage copy site-wide).
     images: [siteConfig.seo.ogImage],
   },
   icons: {

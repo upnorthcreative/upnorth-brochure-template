@@ -8,10 +8,13 @@
 //   variables and are never exposed to the client bundle.
 // - Responses are cached (revalidated hourly) to stay within Google API
 //   quotas and keep pages fast.
-// - Returns `null` whenever the integration is disabled, misconfigured, or
-//   the upstream API fails. There is no hardcoded fallback content — the
-//   Reviews section simply hides itself, so the page never breaks or shows
-//   stale/fake reviews.
+// - When the live API is disabled, misconfigured, or unavailable, it falls
+//   back to a committed snapshot (data/reviews-snapshot.json) so the section
+//   never goes dark during a transient Google outage. Regenerate the snapshot
+//   with `npm run snapshot:reviews`. Only when there is no snapshot either
+//   does fetchReviews() return null and the Reviews section hide itself.
+// - Failures are logged (console.warn/error) so they surface in Vercel logs
+//   instead of failing silently.
 //
 // Provider switch lives in lib/content.ts → siteConfig.reviews.provider:
 //   "places" — Google Places API (available now)
@@ -20,6 +23,7 @@
 
 import type { ReviewProvider, Stat } from "@/types";
 import { siteConfig } from "@/lib/content";
+import reviewsSnapshot from "@/data/reviews-snapshot.json";
 
 /** Normalized review, independent of the source API. */
 export interface Review {
@@ -46,21 +50,49 @@ const REVALIDATE_SECONDS = 3600;
 
 /**
  * Fetch Google reviews using the provider configured in siteConfig.reviews.
- * Returns null when disabled, misconfigured, or unavailable.
+ *
+ * Prefers live data. If the live fetch is unavailable or returns no usable
+ * reviews, falls back to the committed snapshot so the section stays up during
+ * a Google outage. Returns null only when disabled or when there is no live
+ * data AND no snapshot — then the Reviews section hides itself.
  */
 export async function fetchReviews(): Promise<ReviewsData | null> {
   const { enabled, provider } = siteConfig.reviews;
   if (!enabled) return null;
 
   const source = provider as ReviewProvider;
-  switch (source) {
-    case "places":
-      return fetchPlacesReviews();
-    case "gbp":
-      return fetchBusinessProfileReviews();
-    default:
-      return null;
+  const live =
+    source === "places"
+      ? await fetchPlacesReviews()
+      : source === "gbp"
+        ? await fetchBusinessProfileReviews()
+        : null;
+
+  // Live data with at least one review wins.
+  if (live && live.reviews.length > 0) return live;
+
+  // Live failed or came back empty → serve the committed snapshot.
+  const snapshot = getSnapshot();
+  if (snapshot) {
+    console.warn(
+      "[reviews] live fetch unavailable or empty — serving committed snapshot" +
+        (snapshot.capturedAt ? ` (captured ${snapshot.capturedAt})` : "")
+    );
+    return { averageRating: snapshot.averageRating, totalCount: snapshot.totalCount, reviews: snapshot.reviews };
   }
+
+  // No live data and no snapshot — hide the section.
+  return live;
+}
+
+/**
+ * The committed fallback snapshot, or null when it holds no usable reviews
+ * (e.g. an un-generated placeholder). Read once; the import is bundled at
+ * build time so it is always available at runtime on Vercel.
+ */
+function getSnapshot(): (ReviewsData & { capturedAt?: string }) | null {
+  const snap = reviewsSnapshot as unknown as ReviewsData & { capturedAt?: string };
+  return Array.isArray(snap.reviews) && snap.reviews.length > 0 ? snap : null;
 }
 
 /**
@@ -115,11 +147,15 @@ async function fetchPlacesReviews(): Promise<ReviewsData | null> {
       }
     );
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.error(`[reviews] Places API responded ${res.status} ${res.statusText}`);
+      return null;
+    }
 
     const data = (await res.json()) as Record<string, unknown>;
     return normalizePlaces(data);
-  } catch {
+  } catch (err) {
+    console.error("[reviews] Places API request failed:", err);
     return null;
   }
 }

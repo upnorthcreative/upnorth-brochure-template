@@ -30,9 +30,9 @@ interface ReviewsProps {
 export async function Reviews({ bg = "soft", noPaddingTop }: ReviewsProps) {
   const { eyebrow, heading, maxReviews, reviewUrl } = siteConfig.reviews;
 
-  // Live Google reviews only. No hardcoded fallback content — when the API is
-  // disabled, unconfigured, or unavailable (and ISR has no last-good cache),
-  // the section hides itself so the page never shows stale or fake reviews.
+  // Live Google reviews, with a committed snapshot fallback (see lib/reviews.ts)
+  // so the section stays up during a transient API outage. It only hides when
+  // reviews are disabled or there is neither live data nor a snapshot.
   const data = await fetchReviews();
   const cards: ReviewCardData[] = (data?.reviews ?? [])
     .filter((r) => r.text.trim().length > 0)

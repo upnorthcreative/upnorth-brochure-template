@@ -32,7 +32,7 @@ export function businessEntity() {
     url: seo.siteUrl,
     image: `${seo.siteUrl}${seo.ogImage}`,
     priceRange: "$$",
-    ...(siteConfig.phone
+    ...(siteConfig.phone && siteConfig.phoneHref
       ? { telephone: siteConfig.phoneHref.replace("tel:", "") }
       : {}),
     ...(siteConfig.email ? { email: siteConfig.email } : {}),

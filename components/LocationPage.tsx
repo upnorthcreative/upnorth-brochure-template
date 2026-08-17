@@ -18,10 +18,6 @@ export interface LocationFaq {
   question: string;
   answer: string;
 }
-export interface AreaServed {
-  type: "City" | "AdministrativeArea" | "State";
-  name: string;
-}
 export interface AreaCard {
   name: string;
   slug: string; // path without leading slash
@@ -47,7 +43,6 @@ export interface LocationData {
   areas: { intro: string; cards: AreaCard[] };
   faq: { intro: string; items: LocationFaq[] };
   cta: { body: string; label: string };
-  schema: { description: string; areaServed: AreaServed[]; knowsAbout: string[] };
 }
 
 // ── Shared constants ─────────────────────────────────────────────────────────
@@ -99,21 +94,8 @@ export function buildLocationMetadata(data: LocationData): Metadata {
 
 function buildSchemas(data: LocationData) {
   const url = `${siteConfig.seo.siteUrl}/${data.slug}`;
-  const localBusinessSchema = {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "@id": `${url}#business`,
-    name: siteConfig.name,
-    description: data.schema.description,
-    url,
-    telephone: siteConfig.phone ?? undefined,
-    email: siteConfig.email,
-    image: `${siteConfig.seo.siteUrl}${siteConfig.seo.ogImage}`,
-    priceRange: "$$",
-    address: { "@type": "PostalAddress", addressRegion: "Ontario", addressCountry: "CA" },
-    areaServed: data.schema.areaServed.map((a) => ({ "@type": a.type, name: a.name, addressCountry: "CA" })),
-    knowsAbout: data.schema.knowsAbout,
-  };
+  // The canonical business entity is emitted once site-wide by the root layout
+  // (see lib/schema.ts). This page only adds its own FAQ + breadcrumb nodes.
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -127,7 +109,7 @@ function buildSchemas(data: LocationData) {
       { "@type": "ListItem", position: 2, name: `${siteConfig.serviceNoun} ${data.city}`, item: url },
     ],
   };
-  return { localBusinessSchema, faqSchema, breadcrumbSchema };
+  return { faqSchema, breadcrumbSchema };
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -148,11 +130,10 @@ export function LocationPage({ data }: { data: LocationData }) {
   const credibilityStats = [...DEFAULT_CREDIBILITY, data.credibilityLocation];
   const areaCards = data.areas.cards.map((c) => ({ name: c.name, href: `/${c.slug}`, active: c.slug === data.slug }));
   const whyIntro = data.whyIntro ?? DEFAULT_WHY_INTRO;
-  const { localBusinessSchema, faqSchema, breadcrumbSchema } = buildSchemas(data);
+  const { faqSchema, breadcrumbSchema } = buildSchemas(data);
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 

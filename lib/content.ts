@@ -52,6 +52,14 @@ export const siteConfig = {
     postal: "K0A 1B0",
     full: "88 Ridgeline Road, Maplewood, ON K0A 1B0",
   },
+  // Business coordinates — a proximity signal for the Google Map Pack, emitted as
+  // GeoCoordinates in the LocalBusiness schema. Fill in per client from Google
+  // Maps: right-click the business pin → click the lat/long at the top to copy.
+  // Leave both null to omit the geo block (schema stays valid).
+  geo: {
+    latitude: null as number | null,
+    longitude: null as number | null,
+  },
 
   // ── Hours ──────────────────────────────────────────────────
   hours: [

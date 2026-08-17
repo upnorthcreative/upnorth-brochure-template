@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/lib/content";
+import { businessEntity } from "@/lib/schema";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,25 +51,11 @@ export const metadata: Metadata = {
   },
 };
 
+// The homepage carries the canonical business entity (shared @id + geo). Every
+// other page emits the same node, so Google consolidates them into one entity.
 const localBusinessSchema = {
   "@context": "https://schema.org",
-  "@type": siteConfig.seo.localBusinessType,
-  name: siteConfig.name,
-  description: siteConfig.seo.defaultDescription,
-  url: siteConfig.seo.siteUrl,
-  ...(siteConfig.phone ? { telephone: siteConfig.phoneHref.replace("tel:", "") } : {}),
-  ...(siteConfig.address.street ? {
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: siteConfig.address.street,
-      addressLocality: siteConfig.address.city,
-      addressRegion: siteConfig.address.province,
-      postalCode: siteConfig.address.postal,
-      addressCountry: "CA",
-    },
-  } : {}),
-  ...(siteConfig.seo.openingHours.length ? { openingHours: siteConfig.seo.openingHours } : {}),
-  image: `${siteConfig.seo.siteUrl}${siteConfig.seo.ogImage}`,
+  ...businessEntity(),
 };
 
 const gaId = siteConfig.analytics.googleAnalyticsId;

@@ -5,7 +5,9 @@ import { ContactSection } from "@/components/sections/ContactSection";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Contact ${siteConfig.name}. Call ${siteConfig.phone} or send us a message for a free estimate.`,
+  description: siteConfig.phone
+    ? `Contact ${siteConfig.name}. Call ${siteConfig.phone} or send us a message for a free estimate.`
+    : `Contact ${siteConfig.name}. Send us a message for a free estimate.`,
   alternates: {
     canonical: `${siteConfig.seo.siteUrl}/contact`,
   },
@@ -18,7 +20,9 @@ export default function ContactPage() {
       <PageBanner
         eyebrow="Contact Us"
         title="Get a Free Estimate"
-        description={<>Call us at <a href={siteConfig.phoneHref} className="text-white hover:text-neutral-300 transition-colors">{siteConfig.phone}</a> or send a message below — we typically respond within one business day.</>}
+        description={siteConfig.phone
+          ? <>Call us at <a href={siteConfig.phoneHref ?? undefined} className="text-white hover:text-neutral-300 transition-colors">{siteConfig.phone}</a> or send a message below — we typically respond within one business day.</>
+          : <>Send us a message below — we typically respond within one business day.</>}
         wide
       />
       <ContactSection />

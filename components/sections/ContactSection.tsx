@@ -17,16 +17,20 @@ export function ContactSection() {
             </h2>
 
             <div className="space-y-8 mb-12">
-              <div>
-                <p className="text-[10px] text-neutral-400 uppercase tracking-[0.15em] mb-2">Phone</p>
-                <a href={siteConfig.phoneHref} className="text-[17px] font-medium hover:opacity-60 transition-opacity">
-                  {siteConfig.phone}
-                </a>
-              </div>
-              <div>
-                <p className="text-[10px] text-neutral-400 uppercase tracking-[0.15em] mb-2">Address</p>
-                <p className="text-[17px] font-medium">{siteConfig.address.full}</p>
-              </div>
+              {siteConfig.phone && (
+                <div>
+                  <p className="text-[10px] text-neutral-400 uppercase tracking-[0.15em] mb-2">Phone</p>
+                  <a href={siteConfig.phoneHref ?? undefined} className="text-[17px] font-medium hover:opacity-60 transition-opacity">
+                    {siteConfig.phone}
+                  </a>
+                </div>
+              )}
+              {siteConfig.address.full && (
+                <div>
+                  <p className="text-[10px] text-neutral-400 uppercase tracking-[0.15em] mb-2">Address</p>
+                  <p className="text-[17px] font-medium">{siteConfig.address.full}</p>
+                </div>
+              )}
               <div>
                 <p className="text-[10px] text-neutral-400 uppercase tracking-[0.15em] mb-3">Hours</p>
                 <div className="space-y-2">

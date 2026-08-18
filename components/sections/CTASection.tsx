@@ -22,15 +22,17 @@ export function CTASection() {
             <Button href={siteConfig.cta.cta.href} variant="primary" size="lg" className="w-full sm:w-auto">
               {siteConfig.cta.cta.label}
             </Button>
-            <div className="flex items-center gap-3">
-              <span className="text-neutral-400 text-[13px]">Or call us directly —</span>
-              <a
-                href={siteConfig.phoneHref}
-                className="text-neutral-950 text-[17px] font-semibold tracking-tight hover:text-neutral-600 transition-colors"
-              >
-                {siteConfig.phone}
-              </a>
-            </div>
+            {siteConfig.phone && (
+              <div className="flex items-center gap-3">
+                <span className="text-neutral-400 text-[13px]">Or call us directly —</span>
+                <a
+                  href={siteConfig.phoneHref ?? undefined}
+                  className="text-neutral-950 text-[17px] font-semibold tracking-tight hover:text-neutral-600 transition-colors"
+                >
+                  {siteConfig.phone}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </Container>

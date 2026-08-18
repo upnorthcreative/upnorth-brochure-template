@@ -22,7 +22,7 @@ export function ServiceAreasSection({ noPaddingTop }: ServiceAreasSectionProps) 
             </h2>
           </div>
           <p className="text-neutral-500 text-[14px] sm:text-right lg:whitespace-nowrap">
-            Based in {address.city} — serving {serviceRadius}.
+            {address.city ? `Based in ${address.city} — serving ${serviceRadius}.` : `Serving ${serviceRadius}.`}
           </p>
         </div>
 

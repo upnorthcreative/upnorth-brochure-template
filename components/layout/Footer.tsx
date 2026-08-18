@@ -68,13 +68,15 @@ export function Footer() {
           {/* Contact & Social */}
           <div>
             <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-700 mb-5">Contact</p>
-            <div className="space-y-1 text-[13px] mb-5">
-              <p>
-                <a href={siteConfig.phoneHref} className={`inline-block ${hoverUnderline}`}>
-                  {siteConfig.phone}
-                </a>
-              </p>
-            </div>
+            {siteConfig.phone && (
+              <div className="space-y-1 text-[13px] mb-5">
+                <p>
+                  <a href={siteConfig.phoneHref ?? undefined} className={`inline-block ${hoverUnderline}`}>
+                    {siteConfig.phone}
+                  </a>
+                </p>
+              </div>
+            )}
             <div className="flex gap-3">
               {siteConfig.social.facebook && (
                 <a href={siteConfig.social.facebook} target="_blank" rel="noopener noreferrer"

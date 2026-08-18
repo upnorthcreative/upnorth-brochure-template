@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "snapshot:reviews": "node --env-file=.env.local scripts/snapshot-reviews.mjs"
+    "lint": "eslint"
   },
   "dependencies": {
     "next": "16.2.9",

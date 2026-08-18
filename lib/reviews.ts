@@ -6,15 +6,17 @@
 //
 // - Runs server-side only. API credentials are read from environment
 //   variables and are never exposed to the client bundle.
-// - Responses are cached (revalidated hourly) to stay within Google API
-//   quotas and keep pages fast.
-// - When the live API is disabled, misconfigured, or unavailable, it falls
-//   back to a committed snapshot (data/reviews-snapshot.json) so the section
-//   never goes dark during a transient Google outage. Regenerate the snapshot
-//   with `npm run snapshot:reviews`. Only when there is no snapshot either
-//   does fetchReviews() return null and the Reviews section hide itself.
-// - Failures are logged (console.warn/error) so they surface in Vercel logs
-//   instead of failing silently.
+// - Responses are cached (revalidated hourly) for performance and to stay
+//   within Google's API quota — temporary caching only.
+// - Returns null when disabled, misconfigured, or the API is unavailable; the
+//   Reviews section then hides itself. Failures are logged (console.error) so
+//   they surface in Vercel logs instead of failing silently.
+// - COMPLIANCE: Google's Places API terms only permit caching the Place ID —
+//   review text, author names, and author photo URLs must NOT be persisted.
+//   So we fetch review content live and never snapshot it to disk. When we
+//   display it, we credit the author (name + photo + profile link) and link to
+//   the source review on Google, as the policy requires.
+//   https://developers.google.com/maps/documentation/places/web-service/policies
 //
 // Provider switch lives in lib/content.ts → siteConfig.reviews.provider:
 //   "places" — Google Places API (available now)
@@ -23,12 +25,13 @@
 
 import type { ReviewProvider, Stat } from "@/types";
 import { siteConfig } from "@/lib/content";
-import reviewsSnapshot from "@/data/reviews-snapshot.json";
 
 /** Normalized review, independent of the source API. */
 export interface Review {
   id: string;
   author: string;
+  /** Author's Google profile URL, when available (required attribution). */
+  authorUri: string | null;
   rating: number;
   text: string;
   /** ISO timestamp, when available */
@@ -36,6 +39,8 @@ export interface Review {
   /** e.g. "3 months ago", when available */
   relativeTime: string | null;
   photoUrl: string | null;
+  /** Deep link to the review on Google (required source attribution). */
+  sourceUrl: string | null;
 }
 
 /** Normalized aggregate + reviews payload. */
@@ -51,48 +56,23 @@ const REVALIDATE_SECONDS = 3600;
 /**
  * Fetch Google reviews using the provider configured in siteConfig.reviews.
  *
- * Prefers live data. If the live fetch is unavailable or returns no usable
- * reviews, falls back to the committed snapshot so the section stays up during
- * a Google outage. Returns null only when disabled or when there is no live
- * data AND no snapshot — then the Reviews section hides itself.
+ * Fetches live data only — review content is never persisted to disk (see the
+ * compliance note above). Returns null when disabled, misconfigured, or the
+ * upstream API is unavailable; the Reviews section then hides itself.
  */
 export async function fetchReviews(): Promise<ReviewsData | null> {
   const { enabled, provider } = siteConfig.reviews;
   if (!enabled) return null;
 
   const source = provider as ReviewProvider;
-  const live =
-    source === "places"
-      ? await fetchPlacesReviews()
-      : source === "gbp"
-        ? await fetchBusinessProfileReviews()
-        : null;
-
-  // Live data with at least one review wins.
-  if (live && live.reviews.length > 0) return live;
-
-  // Live failed or came back empty → serve the committed snapshot.
-  const snapshot = getSnapshot();
-  if (snapshot) {
-    console.warn(
-      "[reviews] live fetch unavailable or empty — serving committed snapshot" +
-        (snapshot.capturedAt ? ` (captured ${snapshot.capturedAt})` : "")
-    );
-    return { averageRating: snapshot.averageRating, totalCount: snapshot.totalCount, reviews: snapshot.reviews };
+  switch (source) {
+    case "places":
+      return fetchPlacesReviews();
+    case "gbp":
+      return fetchBusinessProfileReviews();
+    default:
+      return null;
   }
-
-  // No live data and no snapshot — hide the section.
-  return live;
-}
-
-/**
- * The committed fallback snapshot, or null when it holds no usable reviews
- * (e.g. an un-generated placeholder). Read once; the import is bundled at
- * build time so it is always available at runtime on Vercel.
- */
-function getSnapshot(): (ReviewsData & { capturedAt?: string }) | null {
-  const snap = reviewsSnapshot as unknown as ReviewsData & { capturedAt?: string };
-  return Array.isArray(snap.reviews) && snap.reviews.length > 0 ? snap : null;
 }
 
 /**
@@ -175,11 +155,13 @@ function normalizePlaces(data: Record<string, unknown>): ReviewsData {
       return {
         id: (r.name as string) ?? String(i),
         author: author?.displayName ?? "Anonymous",
+        authorUri: author?.uri ?? null,
         rating: typeof r.rating === "number" ? r.rating : 5,
         text: text?.text ?? "",
         date: (r.publishTime as string) ?? null,
         relativeTime: (r.relativePublishTimeDescription as string) ?? null,
         photoUrl: author?.photoUri ?? null,
+        sourceUrl: (r.googleMapsUri as string) ?? null,
       };
     }),
   };

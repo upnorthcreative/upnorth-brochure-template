@@ -8,10 +8,70 @@ import { Stars, GoogleG } from "@/components/ui/Stars";
 export interface ReviewCardData {
   id: string;
   author: string;
+  /** Author's Google profile URL, when available (attribution). */
+  authorUri: string | null;
   text: string;
   rating: number;
   meta: string | null;
   photoUrl: string | null;
+  /** Deep link to the source review on Google (required attribution). */
+  sourceUrl: string | null;
+}
+
+/** Author credit block — links to the Google profile when available. */
+function Author({
+  card,
+  avatarClassName,
+}: {
+  card: ReviewCardData;
+  avatarClassName?: string;
+}) {
+  const inner = (
+    <>
+      <Avatar src={card.photoUrl} name={card.author} className={avatarClassName} />
+      <div>
+        <p className="text-brand text-[13px] font-semibold group-hover/author:underline">
+          {card.author}
+        </p>
+        {card.meta && <p className="text-neutral-400 text-[12px] mt-0.5">{card.meta}</p>}
+      </div>
+    </>
+  );
+  return card.authorUri ? (
+    <a
+      href={card.authorUri}
+      target="_blank"
+      rel="noopener noreferrer nofollow"
+      className="group/author flex items-center gap-3"
+    >
+      {inner}
+    </a>
+  ) : (
+    <div className="flex items-center gap-3">{inner}</div>
+  );
+}
+
+/** Google mark — links to the source review on Google when available. */
+function GoogleSource({
+  sourceUrl,
+  className,
+}: {
+  sourceUrl: string | null;
+  className?: string;
+}) {
+  return sourceUrl ? (
+    <a
+      href={sourceUrl}
+      target="_blank"
+      rel="noopener noreferrer nofollow"
+      aria-label="View this review on Google"
+      title="View on Google"
+    >
+      <GoogleG className={className} />
+    </a>
+  ) : (
+    <GoogleG className={className} />
+  );
 }
 
 const GAP_PX = 20; // matches gap-5
@@ -133,7 +193,7 @@ export function ReviewsCarousel({ cards }: { cards: ReviewCardData[] }) {
           >
             <div className="flex items-start justify-between gap-3 mb-6">
               <Stars rating={c.rating} />
-              <GoogleG />
+              <GoogleSource sourceUrl={c.sourceUrl} />
             </div>
 
             <blockquote
@@ -168,12 +228,8 @@ export function ReviewsCarousel({ cards }: { cards: ReviewCardData[] }) {
               </div>
             )}
 
-            <div className="mt-auto pt-5 border-t border-neutral-100 flex items-center gap-3">
-              <Avatar src={c.photoUrl} name={c.author} />
-              <div>
-                <p className="text-brand text-[13px] font-semibold">{c.author}</p>
-                {c.meta && <p className="text-neutral-400 text-[12px] mt-0.5">{c.meta}</p>}
-              </div>
+            <div className="mt-auto pt-5 border-t border-neutral-100">
+              <Author card={c} />
             </div>
           </li>
         ))}
@@ -243,12 +299,10 @@ function ReviewDialog({
       {review && (
         <div className="w-[90vw] max-w-lg bg-white border border-neutral-200 p-8 lg:p-10 shadow-xl animate-fade-in">
           <div className="flex items-center gap-3 mb-5">
-            <Avatar src={review.photoUrl} name={review.author} className="w-11 h-11" />
             <div className="flex-1 min-w-0">
-              <p className="text-brand text-[14px] font-semibold">{review.author}</p>
-              {review.meta && <p className="text-neutral-400 text-[12px] mt-0.5">{review.meta}</p>}
+              <Author card={review} avatarClassName="w-11 h-11" />
             </div>
-            <GoogleG className="w-5 h-5" />
+            <GoogleSource sourceUrl={review.sourceUrl} className="w-5 h-5" />
           </div>
 
           <Stars rating={review.rating} className="w-3.5 h-3.5" />

@@ -30,9 +30,9 @@ interface ReviewsProps {
 export async function Reviews({ bg = "soft", noPaddingTop }: ReviewsProps) {
   const { eyebrow, heading, maxReviews, reviewUrl } = siteConfig.reviews;
 
-  // Live Google reviews, with a committed snapshot fallback (see lib/reviews.ts)
-  // so the section stays up during a transient API outage. It only hides when
-  // reviews are disabled or there is neither live data nor a snapshot.
+  // Live Google reviews (see lib/reviews.ts) — fetched fresh, never snapshotted,
+  // per the Places API caching terms. Hides when reviews are disabled or there
+  // is no usable live data.
   const data = await fetchReviews();
   const cards: ReviewCardData[] = (data?.reviews ?? [])
     .filter((r) => r.text.trim().length > 0)
@@ -40,10 +40,12 @@ export async function Reviews({ bg = "soft", noPaddingTop }: ReviewsProps) {
     .map((r) => ({
       id: r.id,
       author: r.author,
+      authorUri: r.authorUri,
       text: r.text,
       rating: r.rating,
       meta: formatDate(r.date) ?? r.relativeTime,
       photoUrl: r.photoUrl,
+      sourceUrl: r.sourceUrl,
     }));
 
   // Nothing to show — hide the section entirely.

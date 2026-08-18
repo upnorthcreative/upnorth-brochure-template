@@ -68,16 +68,6 @@ export const maplewood: LocationData = {
     body: "Need a reliable local team in Maplewood? Get a free estimate today — call us or send a message and we'll take care of the rest.",
     label: "Home Services · Maplewood",
   },
-  schema: {
-    description:
-      "Licensed and insured home services contractor serving Maplewood, Ontario — repairs, installations, renovations, and maintenance for residential and commercial clients.",
-    areaServed: [
-      { type: "City", name: "Maplewood" },
-      { type: "City", name: "Cedarville" },
-      { type: "State", name: "Ontario" },
-    ],
-    knowsAbout: ["Home Repairs", "Plumbing", "Heating & Cooling", "Installations", "Renovations", "Maintenance"],
-  },
 };
 
 export const cedarville: LocationData = {
@@ -140,16 +130,6 @@ export const cedarville: LocationData = {
   cta: {
     body: "Looking for a dependable local team in Cedarville? Get a free estimate today — call us or send a message and we'll take it from there.",
     label: "Home Services · Cedarville",
-  },
-  schema: {
-    description:
-      "Licensed and insured home services contractor serving Cedarville, Ontario — repairs, installations, renovations, and maintenance for residential and commercial clients.",
-    areaServed: [
-      { type: "City", name: "Cedarville" },
-      { type: "City", name: "Maplewood" },
-      { type: "State", name: "Ontario" },
-    ],
-    knowsAbout: ["Home Repairs", "Plumbing", "Heating & Cooling", "Installations", "Renovations", "Maintenance"],
   },
 };
 

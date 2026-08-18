@@ -42,15 +42,23 @@ export const siteConfig = {
   ogLocale: "en_CA",
 
   // ── Contact ────────────────────────────────────────────────
-  phone: "(613) 555-0147",
-  phoneHref: "tel:+16135550147",
-  email: "hello@maplewoodhomeservices.ca",
+  phone: null as string | null,
+  phoneHref: null as string | null,
+  email: null as string | null,
   address: {
-    street: "88 Ridgeline Road",
-    city: "Maplewood",
-    province: "ON",
-    postal: "K0A 1B0",
-    full: "88 Ridgeline Road, Maplewood, ON K0A 1B0",
+    street: null as string | null,
+    city: null as string | null,
+    province: null as string | null,
+    postal: null as string | null,
+    full: null as string | null,
+  },
+  // Business coordinates — a proximity signal for the Google Map Pack, emitted as
+  // GeoCoordinates in the LocalBusiness schema. Fill in per client from Google
+  // Maps: right-click the business pin → click the lat/long at the top to copy.
+  // Leave both null to omit the geo block (schema stays valid).
+  geo: {
+    latitude: null as number | null,
+    longitude: null as number | null,
   },
 
   // ── Hours ──────────────────────────────────────────────────

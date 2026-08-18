@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/lib/content";
+import { businessRef } from "@/lib/schema";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -92,14 +93,7 @@ function buildSchemas(data: ServiceData) {
     serviceType: data.schema.serviceType,
     description: data.schema.description,
     url,
-    provider: {
-      "@type": "ProfessionalService",
-      name: siteConfig.name,
-      url: siteConfig.seo.siteUrl,
-      telephone: siteConfig.phone ?? undefined,
-      email: siteConfig.email,
-      address: { "@type": "PostalAddress", addressRegion: "Ontario", addressCountry: "CA" },
-    },
+    provider: businessRef,
     ...(data.city ? { areaServed: { "@type": "City", name: data.city, addressCountry: "CA" } } : {}),
   };
   const faqSchema = {
